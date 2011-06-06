@@ -1,0 +1,10 @@
+#rules-box {
+    background-color: #F2F2F2;
+    border: 1px solid #999999;
+    bottom: 0;
+    overflow: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    left: 0;
+}
