@@ -1,10 +1,32 @@
-#rules-box {
-    background-color: #F2F2F2;
-    border: 1px solid #999999;
+#bounding-box {
     bottom: 0;
-    overflow: auto;
+    overflow: hidden;
     position: absolute;
     right: 0;
     top: 0;
     left: 0;
+}
+
+#rules-box {
+    right: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    margin-bottom: 260px;
+}
+
+#editor-box {
+    margin-top: 10px;
+    height: 250px;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+#rules-box, #editor-box {
+    background-color: #F2F2F2;
+    border: 1px solid #999999;
+    overflow: auto;
 }

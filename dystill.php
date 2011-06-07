@@ -37,7 +37,9 @@ class dystill extends rcube_plugin {
         
         $this->register_action("plugin.dystill.rules", array($this, "rules_init"));
         $this->register_action("plugin.dystill.rules_frame", array($this, "rules_frame"));
+        $this->register_action("plugin.dystill.rules_editor", array($this, "rules_editor"));
         $this->register_action("plugin.dystill.get_rules", array($this, "get_rules"));
+        $this->register_action("plugin.dystill.get_rule", array($this, "get_rule"));
         
         $this->dsn = $this->rc->config->get("dystill.db_dsnw",  $this->rc->config->get("db_dsnw"));
     }
@@ -57,20 +59,83 @@ class dystill extends rcube_plugin {
     
     
     /**
+     * Called by the frame that displays the rule editor.
+     * 
+     * @return	void
+     */
+    public function rules_editor() {
+        $this->include_stylesheet("skins/" . $this->skin . "/dystill_rules.css");
+        $this->include_script("dystill_rules_editor.js");
+        $this->rc->output->send("dystill.rules_editor");
+    }
+    
+    
+    /**
      * This returns all rules and actions for the current user via AJAX.
      * 
      * @return	void
      */
     public function get_rules() {
+        $rules = $this->_get_rules();
+        
+        // We don't need the IDs, so drop them.
+        $rules = array_values($rules);
+        
+        // Return that the to the JS callback.
+        $this->rc->output->command('plugin.dystill.get_rules_callback', array('rules' => $rules));
+    }
+    
+    
+    /**
+     * Gets rule information via AJAX
+     * 
+     * @return	void
+     */
+    public function get_rule() {
+        // Pull out the filter ID
+        $filter_id = get_input_value('filter_id', RCUBE_INPUT_POST);
+        
+        // Get the rule
+        $rule = $this->_get_rules($filter_id);
+        
+        // Strip it out
+        if(!empty($rule)) {
+            $rule = $rule[$filter_id];
+        }
+        
+        // Send it back
+        $this->rc->output->command('plugin.dystill.get_rule_callback', array('rule' => $rule));
+    }
+    
+    
+    /**
+     * Enter description here ...
+     * 
+     * @param	int		$rule_id	The ID of the filter
+     * @return	void
+     */
+    private function _get_rules($rule_id = null) {
         // Pull the user out of user data
         $username = $this->rc->user->data["username"];
         
-        // Query the database for that user's rules
+        // Open a DB connection
         $db = new rcube_mdb2($this->dsn);
         $db->db_connect("r");
-        $res = $db->query(sprintf("select * from filters_actions inner join filters using (filter_id) where email='%s'",
+        
+        // Create SQL statement
+        $sql = sprintf("select * from filters_actions inner join filters using (filter_id) where email='%s'",
             $db->escapeSimple($username)
-        ));
+        );
+        
+        // Only query one?
+        if(!is_null($rule_id)) {
+            $sql .= sprintf(" and filter_id=%d",
+                $rule_id
+            );
+        }
+        
+        // Query the database for that user's rules
+        $res = $db->query($sql);
         
         // Loop through the rows, build a data structure.
         while($row = $db->fetch_assoc($res)) {
@@ -86,11 +151,7 @@ class dystill extends rcube_plugin {
             );
         }
         
-        // We don't need the IDs, so drop them.
-        $rules = array_values($rules);
-        
-        // Return that the to the JS callback.
-        $this->rc->output->command('plugin.dystill.get_rules_callback', array('rules' => $rules));
+        return $rules;
     }
 }
 

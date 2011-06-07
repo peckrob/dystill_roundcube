@@ -33,4 +33,8 @@ $labels["block"] = "Block delivery";
 $labels["blocknote"] = "Block delivery, notify sender";
 $labels["copyto"] = "Copy to folder ";
 
+$labels["value"] = "Value";
+$labels["comparison"] = "Comparison";
+$labels["header"] = "Header";
+
 ?>

@@ -29,8 +29,18 @@ rcmail.addEventListener('plugin.dystill.get_rules_callback', function(e) {
             
             actions = actions.join(", ");
             
+            var tr = $("<tr>")
+                .attr("filter_id", zrule["filter_id"])
+                .append("<td class='sidecol'>" + rule + "</td><td>" + actions + "</td>")
+                .click(function(e) {
+                    $("table.rules_table tr").removeClass("selected");
+                    $(this).addClass("selected");
+                    
+                    rcmail.http_post('plugin.dystill.get_rule', "filter_id=" + $(this).attr("filter_id"));
+                });
+            
             $('table.rules_table > tbody:last')
-                .append("<tr><td>" + rule + "</td><td>" + actions + "</td></tr>");
+                .append(tr);
         }
     }
 });
