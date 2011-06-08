@@ -40,6 +40,7 @@ class dystill extends rcube_plugin {
         $this->register_action("plugin.dystill.rules_editor", array($this, "rules_editor"));
         $this->register_action("plugin.dystill.get_rules", array($this, "get_rules"));
         $this->register_action("plugin.dystill.get_rule", array($this, "get_rule"));
+        $this->register_action("plugin.dystill.get_folders", array($this, "get_folders"));
         
         $this->dsn = $this->rc->config->get("dystill.db_dsnw",  $this->rc->config->get("db_dsnw"));
     }
@@ -55,18 +56,6 @@ class dystill extends rcube_plugin {
         $this->include_stylesheet("skins/" . $this->skin . "/dystill_rules.css");
         $this->include_script("dystill_rules.js");
         $this->rc->output->send("dystill.rules_frame");
-    }
-    
-    
-    /**
-     * Called by the frame that displays the rule editor.
-     * 
-     * @return	void
-     */
-    public function rules_editor() {
-        $this->include_stylesheet("skins/" . $this->skin . "/dystill_rules.css");
-        $this->include_script("dystill_rules_editor.js");
-        $this->rc->output->send("dystill.rules_editor");
     }
     
     
@@ -105,6 +94,22 @@ class dystill extends rcube_plugin {
         
         // Send it back
         $this->rc->output->command('plugin.dystill.get_rule_callback', array('rule' => $rule));
+    }
+    
+    
+    /**
+     * Gets a list of folders via AJAX
+     * 
+     * @return	void
+     */
+    public function get_folders() {
+        $folders = array_keys($_SESSION["unseen_count"]);
+        
+        foreach($folders as &$folder) {
+            $folder = str_replace(".", "/", $folder);
+        }
+        
+        $this->rc->output->command('plugin.dystill.get_folders_callback', array('folders' => $folders));
     }
     
     

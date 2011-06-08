@@ -28,32 +28,60 @@
             </div>
         
             <div id="editor-box">
-                <table>
-                    <tr>
-                        <td><roundcube:label name="dystill.header" /></td>
-                        <td>
-                            <input type="text" name="dystill_header" id="dystill_header" /> 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><roundcube:label name="dystill.comparison" /></td>
-                        <td>
-                            <select id="dystill_comparison">
-                                <option value="0"><roundcube:label name="dystill.starts_with" /></option>
-                                <option value="1"><roundcube:label name="dystill.ends_with" /></option>
-                                <option value="2"><roundcube:label name="dystill.contains" /></option>
-                                <option value="3"><roundcube:label name="dystill.is" /></option>
-                                <option value="4"><roundcube:label name="dystill.regexp" /></option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><roundcube:label name="dystill.value" /></td>
-                        <td>
-                            <input type="text" name="dystill_value" id="dystill_value" /> 
-                        </td>
-                    </tr>
-                </table>
+
+                <fieldset class="tabbed">
+                    <legend>Rule</legend>
+
+                    <table>
+                        <tr>
+                            <td><roundcube:label name="dystill.header" /></td>
+                            <td>
+                                <select id="dystill_header">
+                                    <option value="From">From</option>
+                                    <option value="To">To</option>
+                                    <option value="Subject">Subject</option>
+                                    <option value="Return-Path">Return Path</option>
+                                    <option value="X-Spam-Flag">X-Spam-Flag</option>
+                                </select> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><roundcube:label name="dystill.comparison" /></td>
+                            <td>
+                                <select id="dystill_comparison">
+                                    <option value="0"><roundcube:label name="dystill.starts_with" /></option>
+                                    <option value="1"><roundcube:label name="dystill.ends_with" /></option>
+                                    <option value="2"><roundcube:label name="dystill.contains" /></option>
+                                    <option value="3"><roundcube:label name="dystill.is" /></option>
+                                    <option value="4"><roundcube:label name="dystill.regexp" /></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><roundcube:label name="dystill.value" /></td>
+                            <td>
+                                <input type="text" name="dystill_value" id="dystill_value" /> 
+                            </td>
+                        </tr>
+                    </table>
+
+                </fieldset>
+                <fieldset class="tabbed">
+                    <legend>Actions</legend>
+                    
+                    <table>
+                        <tr>
+                            <td><roundcube:label name="dystill.to" /></td>
+                            <td>
+                                <select id="dystill_to"></select>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                
+                <script>
+                rcube_init_tabs('editor-box');
+                </script>
             </div>
         </div>
     </div>
