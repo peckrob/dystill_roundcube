@@ -30,13 +30,13 @@
             <div id="editor-box">
 
                 <fieldset class="tabbed">
-                    <legend>Rule</legend>
+                    <legend><roundcube:label name="dystill.rule" /></legend>
 
                     <table>
                         <tr>
                             <td><roundcube:label name="dystill.header" /></td>
                             <td>
-                                <select id="dystill_header">
+                                <select id="dystill_field">
                                     <option value="From">From</option>
                                     <option value="To">To</option>
                                     <option value="Subject">Subject</option>
@@ -66,8 +66,9 @@
                     </table>
 
                 </fieldset>
+                
                 <fieldset class="tabbed">
-                    <legend>Actions</legend>
+                    <legend><roundcube:label name="dystill.folders" /></legend>
                     
                     <table>
                         <tr>
@@ -76,8 +77,98 @@
                                 <select id="dystill_to"></select>
                             </td>
                         </tr>
+                        <tr>
+                            <td><roundcube:label name="dystill.copyto" /></td>
+                            <td>
+                                <select id="dystill_copyto"></select>
+                            </td>
+                        </tr>
                     </table>
                 </fieldset>
+                
+                <fieldset class="tabbed">
+                    <legend><roundcube:label name="dystill.headerssub" /></legend>
+                    
+                    <table>
+                        <tr>
+                            <td><roundcube:label name="dystill.prependsub" /></td>
+                            <td>
+                                <input type="text" name="dystill_prependsub" id="dystill_prependsub" /> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><roundcube:label name="dystill.header" /></td>
+                            <td>
+                                <input type="text" name="dystill_header" id="dystill_header" /> 
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                
+                <fieldset class="tabbed">
+                    <legend><roundcube:label name="dystill.forwardtab" /></legend>
+                    
+                    <table>
+                        <tr>
+                            <td><roundcube:label name="dystill.forward" /></td>
+                            <td>
+                                <input type="text" name="dystill_forward" id="dystill_forward" /> 
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                
+                <fieldset class="tabbed">
+                    <legend>Status</legend>
+                    
+                    <table>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="dystill_markasread" id="dystill_markasread" value="1" />
+                            </td>
+                            <td>
+                                <label for="dystill_markasread"><roundcube:label name="dystill.markasread" /></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="dystill_flag" id="dystill_flag" value="1" />
+                            </td>
+                            <td>
+                                <label for="dystill_markasread"><roundcube:label name="dystill.flag" /></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="dystill_flag" id="dystill_delete" value="1" />
+                            </td>
+                            <td>
+                                <label for="dystill_delete"><roundcube:label name="dystill.delete" /></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="dystill_flag" id="dystill_block" value="1" />
+                            </td>
+                            <td>
+                                <label for="dystill_block"><roundcube:label name="dystill.block" /></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="dystill_flag" id="dystill_blocknote" value="1" />
+                            </td>
+                            <td>
+                                <label for="dystill_blocknote"><roundcube:label name="dystill.blocknote" /></label>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+                
+                <p style="margin-left: 12px;">
+                    <input class="button" type="button" value="<roundcube:label name="delete" />" />
+                    <input class="button mainaction" type="button" value="<roundcube:label name="save" />" />
+                </p>
                 
                 <script>
                 rcube_init_tabs('editor-box');

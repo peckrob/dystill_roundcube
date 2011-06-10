@@ -37,4 +37,9 @@ $labels["value"] = "Value";
 $labels["comparison"] = "Comparison";
 $labels["header"] = "Header";
 
+$labels["folders"] = "Folders";
+$labels["headerssub"] = "Headers and Subjects";
+$labels["status"] = "Status";
+$labels["forwardtab"] = "Forward";
+
 ?>
