@@ -114,6 +114,174 @@ class dystill extends rcube_plugin {
     
     
     /**
+     * Adds a rule via AJAX.
+     * 
+     * @return	void
+     */
+    public function add_rule() {
+        // Pull the user out of user data
+        $callback = "plugin.dystill.add_rule_callback";
+        $username = $this->rc->user->data["username"];
+        
+        // Pull out all our variables.
+        $field = get_input_value('field', RCUBE_INPUT_POST);
+        $comparison = (int)get_input_value('comparison', RCUBE_INPUT_POST);
+        $value = get_input_value('value', RCUBE_INPUT_POST);
+        $active = (int)get_input_value('active', RCUBE_INPUT_POST);
+        
+        $actions = json_decode(get_input_value('actions', RCUBE_INPUT_POST), true);
+        
+        // Validate the rule
+        if(!$this->_validate($field, $value, $comparison, $actions, $callback)) {
+            return;
+        }
+        
+        // Open a DB connection
+        $db = new rcube_mdb2($this->dsn);
+        $db->db_connect("r");
+        
+        // Do this in a transaction in case of failure.
+        $db->query("start transaction");
+        
+        //  The master insert query
+        $sql = sprintf("insert into filters set field='%s', email='%s', comparison=%d, value='%s', active=%d",
+            $db->escapeSimple($field),
+            $db->escapeSimple($username),
+            $comparison,
+            $db->escapeSimple($value),
+            $active
+        );
+        
+        // Run and check for failures.
+        if(!$db->query($sql)) {
+            $db->query("rollback");
+            $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('dberror')));
+            return;
+        }
+        
+        // Get the new filter_id
+        $filter_id = $db->insert_id;
+        
+        // Now, loop through the actions and add them.
+        foreach($actions as $action) {
+            $sql = sprintf("insert into filters_actions set filter_id=%d, action='%s', argument='%s'", 
+                $filter_id,
+                $db->escapeSimple($action["action"]),
+                $db->escapeSimple($action["argument"])
+            );
+            
+            // Query or rollback on failure.
+            if(!$db->query($sql)) {
+                $db->query("rollback");
+                $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('dberror')));
+                return;
+            }
+        }
+        
+        // If we've gotten this far, commit.
+        $db->query("commit");
+        
+        // Return status.
+        $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('rulecreated')));
+        return;
+    }
+    
+    
+    /**
+     * Edits a rule via AJAX.
+     * 
+     * @return	void
+     */
+    public function edit_rule() {
+        // Pull the user out of user data
+        $callback = "plugin.dystill.add_rule_callback";
+        $username = $this->rc->user->data["username"];
+        
+        // Pull out all our variables
+        $filter_id = get_input_value('filter_id', RCUBE_INPUT_POST);
+        $field = get_input_value('field', RCUBE_INPUT_POST);
+        $comparison = (int)get_input_value('comparison', RCUBE_INPUT_POST);
+        $value = get_input_value('value', RCUBE_INPUT_POST);
+        $active = (int)get_input_value('active', RCUBE_INPUT_POST);
+        
+        $actions = json_decode(get_input_value('actions', RCUBE_INPUT_POST), true);
+        
+        // Open a DB connection
+        $db = new rcube_mdb2($this->dsn);
+        $db->db_connect("r");
+        
+        // Security check to be sure the rule exists and is owned by the user
+        $sql = sprintf("select * from filters where email='%s' and filter_id=%d",
+            $db->escapeSimple($username),
+            $filter_id
+        );
+        
+        // Run that
+        $res = $db->query($sql);
+        
+        // Check to be sure it exists
+        if(!$res->num_rows) {
+            $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('norule')));
+            return;
+        }
+        
+        // Now, validate the rule as they have it edited.
+        if(!$this->_validate($field, $value, $comparison, $actions, $callback)) {
+            return;
+        }
+
+        // Do this in a transaction
+        $db->query("start transaction");
+        
+        // The master query that updates the rule
+        $sql = sprintf("update filters set field='%s', email='%s', comparison=%d, value='%s', active=%d where filter_id=%d",
+            $db->escapeSimple($field),
+            $db->escapeSimple($username),
+            $comparison,
+            $db->escapeSimple($value),
+            $active,
+            $filter_id
+        );
+        
+        // Run and check for failures
+        if(!$db->query($sql)) {
+            $db->query("rollback");
+            $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('dberror')));
+            return;
+        }
+        
+        // Delete the old rules
+        if(!$db->query(sprintf("delete from filters_actions where filter_id=%d", $filter_id))) {
+            $db->query("rollback");
+            $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('dberror')));
+            return;
+        }
+        
+        // Add new rules back.
+        foreach($actions as $action) {
+            $sql = sprintf("insert into filters_actions set filter_id=%d, action='%s', argument='%s'", 
+                $filter_id,
+                $db->escapeSimple($action["action"]),
+                $db->escapeSimple($action["argument"])
+            );
+            
+            if(!$db->query($sql)) {
+                $db->query("rollback");
+                $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('dberror')));
+                return;
+            }
+        }
+        
+        // If we've gotten this far with no errors, commit.
+        $db->query("commit");
+        
+        // Return status.
+        $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('rulecreated')));
+        return;
+    }
+    
+    
+    /**
      * Deletes a rule via AJAX
      * 
      * @return	void
@@ -142,7 +310,8 @@ class dystill extends rcube_plugin {
             $db->query("delete from filters where filter_id=$filter_id");
             $db->query("delete from filters_actions where filter_id=$filter_id");
         } else {
-            $this->rc->output->command('plugin.dystill.delete_rule_callback', array('error' => true, "message" => $this->gettext('norule'))); 
+            $this->rc->output->command('plugin.dystill.delete_rule_callback', array('error' => true, "message" => $this->gettext('norule')));
+            return; 
         }
         
         $this->rc->output->command('plugin.dystill.delete_rule_callback', array('error' => false, "message" => $this->gettext('ruledeleted')));
@@ -193,6 +362,44 @@ class dystill extends rcube_plugin {
         }
         
         return $rules;
+    }
+    
+    
+    /**
+     * Helper function to validate new / edited rules.
+     * 
+     * @param	string	$field		The field for the rule
+     * @param 	int 	$value		The type of comparison
+     * @param 	string	$comparison	The compariosn vale.
+     * @param 	array	$actions	An array of actions to do.
+     * @param 	string	$callback	The javascript callback to send.
+     * @return	bool
+     */
+    private function _validate($field, $value, $comparison, $actions, $callback) {
+        if(empty($field) && empty($value)) {
+            $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('missingfield')));
+            return false;
+        }
+        
+        // TODO: Validate regular expression
+        if($comparison == 4 && false) {
+            $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('badregexp')));
+            return false;
+        }
+        
+        if(empty($actions)) {
+            $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('missingactions')));
+            return false;            
+        }
+        
+        foreach($actions as $action) {
+            if(empty($action["argument"]) && in_array($action["action"], array("prependsub", "header", "forward", "copyto", "to"))) {
+                $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('missingarg')));
+                return false;   
+            }
+        }
+        
+         return true;
     }
 }
 

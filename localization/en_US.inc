@@ -44,5 +44,12 @@ $labels["forwardtab"] = "Forward";
 
 $labels["norule"] = "Could not find rule!";
 $labels["ruledeleted"] = "Rule deleted.";
+$labels["rulecreated"] = "Rule created.";
+$labels["ruleedited"] = "Rule edited.";
+$labels["missingfield"] = "Missing field or value.";
+$labels["missingactions"] = "Missing actions.";
+$labels["badregexp"] = "Invalid regular expression.";
+$labels["missingarg"] = "Required argument for action missing.";
+$labels["dberror"] = "A database error occured.";
 
 ?>

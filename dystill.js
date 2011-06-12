@@ -19,6 +19,19 @@ rcmail.addEventListener('init', function(evt) {
     rcmail.add_element(tab, 'tabs');
     rcmail.register_command('plugin.dystill.rules', function() { rcmail.goto_url('plugin.dystill.rules') }, true);
     rcmail.http_post('plugin.dystill.get_folders', "");
+    
+    // Bind the buttons
+    $("#deletebtn").bind("click", function(e){
+        if(confirm("Are you sure you want to delete this rule?")) {
+            return rcmail.command('dystill.delete_rule', this);
+        } 
+        
+        return false;
+    });
+    
+    $("#savebtn").bind("click", function(e) {
+        return rcmail.command('dystill.save', this);
+    })
 });
 
 
@@ -26,6 +39,7 @@ rcmail.addEventListener('plugin.dystill.get_rule_callback', function(e) {
     $("#dystill_value", top.document).val(e.rule["value"]);
     $("#dystill_comparison", top.document).val(e.rule["comparison"]);
     $("#dystill_field", top.document).val(e.rule["field"]);
+    $("#dystill_filter_id", top.document).val(e.rule["filter_id"]);
     
     var checkboxes = ["markasread", "flag", "delete", "blocknote", "block"];
     for(var i in checkboxes) {
@@ -85,4 +99,16 @@ rcmail.addEventListener('plugin.dystill.get_folders_callback', function(e) {
                     .attr("value",folder)
                     .text(folder));
     }
+});
+
+rcmail.addEventListener("plugin.dystill.edit_rule_callback", function(e) {
+    
+});
+
+rcmail.addEventListener("plugin.dystill.delete_rule_callback", function(e) {
+    
+});
+
+rcmail.addEventListener("plugin.dystill.add_rule_callback", function(e) {
+    
 });
