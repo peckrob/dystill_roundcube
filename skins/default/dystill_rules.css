@@ -67,3 +67,15 @@ table.rules_table tr.selected {
     color: #ffffff;
     background-color: #cc3333;    
 }
+
+table.rules_table a.button {
+    background: url("../../../../skins/default/images/icons/groupactions.png") no-repeat scroll 0 0 transparent;
+    display: block;
+    float: left;
+    height: 22px;
+    margin: 0;
+    opacity: 0.99;
+    overflow: hidden;
+    padding: 0;
+    width: 34px;    
+}

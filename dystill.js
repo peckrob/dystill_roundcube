@@ -21,6 +21,7 @@ rcmail.addEventListener('init', function(evt) {
     rcmail.register_command('plugin.dystill.add_rule', add_rule, true);
     rcmail.register_command('plugin.dystill.edit_rule', edit_rule, true);
     rcmail.register_command('plugin.dystill.delete_rule', delete_rule, true);
+    rcmail.register_command('plugin.dystill.add_rule_func', add_rule_func, true);
     rcmail.http_post('plugin.dystill.get_folders', "");
     
     // Bind the buttons
@@ -166,6 +167,10 @@ rcmail.addEventListener("plugin.dystill.delete_rule_callback", function(e) {
     }
 });
 
+function add_rule_func() {
+    
+}
+
 function add_rule() {
     var post_fields = $(".serialize").serialize();
     
@@ -210,3 +215,7 @@ rcmail.addEventListener("plugin.dystill.add_rule_callback", function(e) {
         })
     }
 });
+
+function _reset() {
+    
+}
