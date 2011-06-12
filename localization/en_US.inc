@@ -15,6 +15,7 @@ $labels["rules"] = "Rules";
 $labels["pagetitle"] = "Rules";
 $labels["rule"] = "Rule";
 $labels["actions"] = "Actions";
+$labels["active"] = "Active";
 
 $labels["starts_with"] = "starts with";
 $labels["ends_with"] = "ends with";

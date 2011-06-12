@@ -47,6 +47,7 @@ class dystill extends rcube_plugin {
 
     
     public function rules_init() {
+        $this->include_script("json2.js");
         $this->rc->output->set_pagetitle($this->gettext('pagetitle'));
         $this->rc->output->send("dystill.rules");
     }
