@@ -42,4 +42,7 @@ $labels["headerssub"] = "Headers and Subjects";
 $labels["status"] = "Status";
 $labels["forwardtab"] = "Forward";
 
+$labels["norule"] = "Could not find rule!";
+$labels["ruledeleted"] = "Rule deleted.";
+
 ?>

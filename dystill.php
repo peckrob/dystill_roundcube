@@ -114,6 +114,42 @@ class dystill extends rcube_plugin {
     
     
     /**
+     * Deletes a rule via AJAX
+     * 
+     * @return	void
+     */
+    public function delete_rule() {
+        $filter_id = get_input_value('filter_id', RCUBE_INPUT_POST);
+        
+        // Pull the user out of user data
+        $username = $this->rc->user->data["username"];
+        
+        // Open a DB connection
+        $db = new rcube_mdb2($this->dsn);
+        $db->db_connect("r");
+        
+        // Security check to be sure the rule exists and is owned by the user
+        $sql = sprintf("select * from filters where email='%s' and filter_id=%d",
+            $db->escapeSimple($username),
+            $filter_id
+        );
+        
+        // Run that
+        $res = $db->query($sql);
+        
+        // Now, delete or throw an error
+        if($res->num_rows) {
+            $db->query("delete from filters where filter_id=$filter_id");
+            $db->query("delete from filters_actions where filter_id=$filter_id");
+        } else {
+            $this->rc->output->command('plugin.dystill.delete_rule_callback', array('error' => true, "message" => $this->gettext('norule'))); 
+        }
+        
+        $this->rc->output->command('plugin.dystill.delete_rule_callback', array('error' => false, "message" => $this->gettext('ruledeleted')));
+    }
+    
+    
+    /**
      * Enter description here ...
      * 
      * @param	int		$rule_id	The ID of the filter
