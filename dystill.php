@@ -41,6 +41,9 @@ class dystill extends rcube_plugin {
         $this->register_action("plugin.dystill.get_rules", array($this, "get_rules"));
         $this->register_action("plugin.dystill.get_rule", array($this, "get_rule"));
         $this->register_action("plugin.dystill.get_folders", array($this, "get_folders"));
+        $this->register_action("plugin.dystill.add_rule", array($this, "add_rule"));
+        $this->register_action("plugin.dystill.edit_rule", array($this, "edit_rule"));
+        $this->register_action("plugin.dystill.delete_rule", array($this, "delete_rule"));
         
         $this->dsn = $this->rc->config->get("dystill.db_dsnw",  $this->rc->config->get("db_dsnw"));
     }
@@ -221,7 +224,7 @@ class dystill extends rcube_plugin {
         $res = $db->query($sql);
         
         // Check to be sure it exists
-        if(!$res->num_rows) {
+        if(!$db->num_rows($res)) {
             $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('norule')));
             return;
         }
@@ -307,7 +310,7 @@ class dystill extends rcube_plugin {
         $res = $db->query($sql);
         
         // Now, delete or throw an error
-        if($res->num_rows) {
+        if($db->num_rows($res)) {
             $db->query("delete from filters where filter_id=$filter_id");
             $db->query("delete from filters_actions where filter_id=$filter_id");
         } else {

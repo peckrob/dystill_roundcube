@@ -36,7 +36,7 @@
                         <tr>
                             <td><roundcube:label name="dystill.header" /></td>
                             <td>
-                                <select id="dystill_field">
+                                <select id="dystill_field" name="field" class="serialize">
                                     <option value="From">From</option>
                                     <option value="To">To</option>
                                     <option value="Subject">Subject</option>
@@ -48,7 +48,7 @@
                         <tr>
                             <td><roundcube:label name="dystill.comparison" /></td>
                             <td>
-                                <select id="dystill_comparison">
+                                <select id="dystill_comparison" name="comparison" class="serialize">
                                     <option value="0"><roundcube:label name="dystill.starts_with" /></option>
                                     <option value="1"><roundcube:label name="dystill.ends_with" /></option>
                                     <option value="2"><roundcube:label name="dystill.contains" /></option>
@@ -60,7 +60,7 @@
                         <tr>
                             <td><roundcube:label name="dystill.value" /></td>
                             <td>
-                                <input type="text" name="dystill_value" id="dystill_value" /> 
+                                <input type="text" name="value" id="dystill_value"  class="serialize" /> 
                             </td>
                         </tr>
                         <tr>
@@ -172,7 +172,7 @@
                     </table>
                 </fieldset>
                 
-                <input type="hidden" name="dystill_filter_id" id="dystill_filter_id" />
+                <input type="hidden" name="filter_id" id="dystill_filter_id"  class="serialize" />
                 
                 <p style="margin-left: 12px;">
                     <input class="button" type="button" id="deletebtn" value="<roundcube:label name="delete" />" />

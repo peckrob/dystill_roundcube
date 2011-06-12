@@ -18,20 +18,23 @@ rcmail.addEventListener('init', function(evt) {
     // add and register
     rcmail.add_element(tab, 'tabs');
     rcmail.register_command('plugin.dystill.rules', function() { rcmail.goto_url('plugin.dystill.rules') }, true);
+    rcmail.register_command('plugin.dystill.add_rule', add_rule, true);
+    rcmail.register_command('plugin.dystill.edit_rule', edit_rule, true);
+    rcmail.register_command('plugin.dystill.delete_rule', delete_rule, true);
     rcmail.http_post('plugin.dystill.get_folders', "");
     
     // Bind the buttons
     $("#deletebtn").bind("click", function(e){
         if(confirm("Are you sure you want to delete this rule?")) {
-            return rcmail.command('dystill.delete_rule', this);
+            return rcmail.command('plugin.dystill.delete_rule', this);
         } 
         
         return false;
     });
     
     $("#savebtn").bind("click", function(e) {
-        return rcmail.command('dystill.save', this);
-    })
+        return rcmail.command('plugin.dystill.edit_rule', this);
+    });
 });
 
 
@@ -101,8 +104,8 @@ rcmail.addEventListener('plugin.dystill.get_folders_callback', function(e) {
     }
 });
 
-rcmail.addEventListener("plugin.dystill.edit_rule", function(e) {
-    var post_fields = $("#editor-box input").serialize();
+function edit_rule() {
+    var post_fields = $(".serialize").serialize();
     
     var check_actions = ["to", "copyto", "forward", "prependsub", "header"];
     var cb_actions = ["markasread", "block", "blocknote", "delete", "flag"];
@@ -111,10 +114,10 @@ rcmail.addEventListener("plugin.dystill.edit_rule", function(e) {
     for(var i in check_actions) {
         var ac = check_actions[i];
         
-        if($("#dystill_" . ac).val() != "") {
+        if($("#dystill_" + ac).val() != "") {
             actions[actions.length] = {
-                "action" => ac,
-                "argument" => $("#dystill_" . ac).val()
+                "action": ac,
+                "argument": $("#dystill_" + ac).val()
             }
         }
     }
@@ -122,18 +125,18 @@ rcmail.addEventListener("plugin.dystill.edit_rule", function(e) {
     for(var i in cb_actions) {
         var ac = cb_actions[i];
         
-        if($("#dystill_" . ac).attr("checked") == true) {
+        if($("#dystill_" + ac).attr("checked") == true) {
             actions[actions.length] = {
-                "action" => ac,
-                "argument" => ""
+                "action": ac,
+                "argument": ""
             }
         }
     }
     
-    post_fields += "&actions=" . urlencode(JSON.stringify(actions));
+    post_fields += "&actions=" + urlencode(JSON.stringify(actions));
     
     rcmail.http_post("plugin.dystill.edit_rule", post_fields);
-});
+}
 
 rcmail.addEventListener("plugin.dystill.edit_rule_callback", function(e) {
     if(e.error == true) {
@@ -146,11 +149,11 @@ rcmail.addEventListener("plugin.dystill.edit_rule_callback", function(e) {
     }
 });
 
-rcmail.addEventListener("plugin.dystill.delete_rule", function(e) {
+function delete_rule() {
     var filter_id = $("#dystill_filter_id").val();
     
-    rcmail.http_post("plugin.dystill.delete_rule", "filter_id=" . filter_id);
-});
+    rcmail.http_post("plugin.dystill.delete_rule", "filter_id=" + filter_id);
+}
 
 rcmail.addEventListener("plugin.dystill.delete_rule_callback", function(e) {
     if(e.error == true) {
@@ -163,8 +166,8 @@ rcmail.addEventListener("plugin.dystill.delete_rule_callback", function(e) {
     }
 });
 
-rcmail.addEventListener("plugin.dystill.add_rule", function(e) {
-    var post_fields = $("#editor-box input").serialize();
+function add_rule() {
+    var post_fields = $(".serialize").serialize();
     
     var check_actions = ["to", "copyto", "forward", "prependsub", "header"];
     var cb_actions = ["markasread", "block", "blocknote", "delete", "flag"];
@@ -175,8 +178,8 @@ rcmail.addEventListener("plugin.dystill.add_rule", function(e) {
         
         if($("#dystill_" . ac).val() != "") {
             actions[actions.length] = {
-                "action" => ac,
-                "argument" => $("#dystill_" . ac).val()
+                "action": ac,
+                "argument": $("#dystill_" . ac).val()
             }
         }
     }
@@ -186,8 +189,8 @@ rcmail.addEventListener("plugin.dystill.add_rule", function(e) {
         
         if($("#dystill_" . ac).attr("checked") == true) {
             actions[actions.length] = {
-                "action" => ac,
-                "argument" => ""
+                "action": ac,
+                "argument": ""
             }
         }
     }
@@ -195,7 +198,7 @@ rcmail.addEventListener("plugin.dystill.add_rule", function(e) {
     post_fields += "&actions=" . urlencode(JSON.stringify(actions));
     
     rcmail.http_post("plugin.dystill.edit_rule", post_fields);
-})
+}
 
 rcmail.addEventListener("plugin.dystill.add_rule_callback", function(e) {
     if(e.error == true) {
