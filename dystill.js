@@ -36,6 +36,8 @@ rcmail.addEventListener('init', function(evt) {
     $("#savebtn").bind("click", function(e) {
         return rcmail.command('plugin.dystill.edit_rule', this);
     });
+    
+    _reset();
 });
 
 
@@ -77,6 +79,8 @@ rcmail.addEventListener('plugin.dystill.get_rule_callback', function(e) {
             }
         }
     }
+    
+    _enable();
 });
 
 rcmail.addEventListener('plugin.dystill.get_folders_callback', function(e) {
@@ -168,7 +172,10 @@ rcmail.addEventListener("plugin.dystill.delete_rule_callback", function(e) {
 });
 
 function add_rule_func() {
-    
+    _reset();
+    _enable();
+    $("#dystill_filter_id", top.document).val("new");
+    $("#deletebtn", top.document).attr("disabled", true);
 }
 
 function add_rule() {
@@ -216,6 +223,22 @@ rcmail.addEventListener("plugin.dystill.add_rule_callback", function(e) {
     }
 });
 
+function _enable() {
+    $("#editor-box input[type=text]", top.document)
+        .attr("disabled", false);
+    $("#editor-box input[type=checkbox]", top.document)
+        .attr("disabled", false);
+    $("#editor-box input[type=button], #editor-box select", top.document)
+        .attr("disabled", false);
+}
+
 function _reset() {
-    
+    $("#editor-box input[type=text]", top.document)
+        .val("")
+        .attr("disabled", true);
+    $("#editor-box input[type=checkbox]", top.document)
+        .attr("checked", false)
+        .attr("disabled", true);
+    $("#editor-box input[type=button], #editor-box select", top.document)
+        .attr("disabled", true);
 }

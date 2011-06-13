@@ -59,3 +59,12 @@
     padding-left: 8px;
     padding-right: 8px;
 }
+
+input[disabled][type=button] {
+    color: #999999;
+}
+
+input[disabled] {
+    background-color: #F2F2F2;
+    border: 1px solid #999999;
+}

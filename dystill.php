@@ -41,7 +41,6 @@ class dystill extends rcube_plugin {
         $this->register_action("plugin.dystill.get_rules", array($this, "get_rules"));
         $this->register_action("plugin.dystill.get_rule", array($this, "get_rule"));
         $this->register_action("plugin.dystill.get_folders", array($this, "get_folders"));
-        $this->register_action("plugin.dystill.add_rule", array($this, "add_rule"));
         $this->register_action("plugin.dystill.edit_rule", array($this, "edit_rule"));
         $this->register_action("plugin.dystill.delete_rule", array($this, "delete_rule"));
         
@@ -164,7 +163,7 @@ class dystill extends rcube_plugin {
         }
         
         // Get the new filter_id
-        $filter_id = $db->insert_id;
+        $filter_id = $db->insert_id();
         
         // Now, loop through the actions and add them.
         foreach($actions as $action) {
@@ -209,6 +208,10 @@ class dystill extends rcube_plugin {
         $active = (int)get_input_value('active', RCUBE_INPUT_POST);
         
         $actions = json_decode(get_input_value('actions', RCUBE_INPUT_POST), true);
+        
+        if($filter_id == "new") {
+            return $this->add_rule();
+        }
         
         // Open a DB connection
         $db = new rcube_mdb2($this->dsn);
@@ -337,7 +340,7 @@ class dystill extends rcube_plugin {
         $db->db_connect("r");
         
         // Create SQL statement
-        $sql = sprintf("select * from filters_actions inner join filters using (filter_id) where email='%s'",
+        $sql = sprintf("select * from filters_actions left join filters using (filter_id) where email='%s'",
             $db->escapeSimple($username)
         );
         
@@ -381,24 +384,24 @@ class dystill extends rcube_plugin {
      */
     private function _validate($field, $value, $comparison, $actions, $callback) {
         if(empty($field) && empty($value)) {
-            $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('missingfield')));
+            $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('missingfield')));
             return false;
         }
         
         // TODO: Validate regular expression
         if($comparison == 4 && false) {
-            $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('badregexp')));
+            $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('badregexp')));
             return false;
         }
         
         if(empty($actions)) {
-            $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('missingactions')));
+            $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('missingactions')));
             return false;            
         }
         
         foreach($actions as $action) {
             if(empty($action["argument"]) && in_array($action["action"], array("prependsub", "header", "forward", "copyto", "to"))) {
-                $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('missingarg')));
+                $this->rc->output->command($callback, array('error' => true, "message" => $this->gettext('missingarg')));
                 return false;   
             }
         }
