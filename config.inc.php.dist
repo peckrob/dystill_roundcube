@@ -1,0 +1,5 @@
+<?php
+
+$rcmail_config["dystill.db_dsnw"] = "mysql://username:password@hostname/database";
+
+?>

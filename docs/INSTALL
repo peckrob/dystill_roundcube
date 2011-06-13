@@ -1,0 +1,19 @@
+Dystill Roundcube Plugin
+Copyright (c) 2010-2011, Rob Peck <rob-dystill@robpeck.com>
+All rights reserved.
+
+INSTALLATION
+
+1) Create a directory called "dystill" in your roundcube plugins/ directory.
+
+2) Extract the contents of this archive into that directory.
+
+3) Copy config.inc.php.dist to config.inc.php and edit the database settings to
+   so that RoundCube can connect to the database where your dystill filters are
+   stored.
+   
+4) Edit the config/main.inc.php for your roundcube installation. Find the
+   $rcmail_config['plugins'] setting, and add "dystill" to the array of enabled
+   plugins.
+   
+That's it! Go test it to be sure, then you can start creating/editing rules.

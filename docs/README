@@ -1,0 +1,27 @@
+Dystill Roundcube Plugin
+Copyright (c) 2010-2011, Rob Peck <rob-dystill@robpeck.com>
+All rights reserved.
+
+README
+
+Dystill Roundcube Plugin is a plugin for the popular open-source webmail app-
+lication Roundcube that provides an interface for adding, editing and deleting
+rules used by dystill, a filtering MySQL-based Mail Delivery Agent. Using this
+plugin gives your users a quick and easy way to create rules that affect how
+mail is sorted and delivered on the server side, rather than on the client side.
+
+LICENSE
+
+Dystill Roundcube Plugin is licensed under the Modified BSD License. A copy of
+this license is found in the docs/ directory.
+
+SOURCE CODE
+
+The source code for this project is available on GitHub. The address is:
+  https://github.com/peckrob/dystill_roundcube
+
+CONTRIBUTIONS
+
+This plugin makes use of json2.js by Douglas Crockford. It is released into the
+public domain and is specifically not included in the license provisions set 
+forth above.

@@ -250,6 +250,7 @@ class dystill extends rcube_plugin {
             $filter_id
         );
         
+        
         // Run and check for failures
         if(!$db->query($sql)) {
             $db->query("rollback");
@@ -283,7 +284,7 @@ class dystill extends rcube_plugin {
         $db->query("commit");
         
         // Return status.
-        $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('rulecreated')));
+        $this->rc->output->command($callback, array('error' => false, "message" => $this->gettext('ruleedited')));
         return;
     }
     
